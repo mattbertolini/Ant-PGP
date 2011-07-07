@@ -1,0 +1,8 @@
+/.settings
+/lib
+/dist
+/build
+/bin
+.classpath
+.project
+.fbprefs

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="antpgp" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+    <property file="build.properties"/>
+        
+    <path id="classpath.compile">
+        <fileset dir="${lib.dir}/compile"/>
+    </path>
+    
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${lib.dir}"/>
+        <mkdir dir="${build.classes.dir}"/>
+        <mkdir dir="${build.javadoc.dir}"/>
+        <mkdir dir="${build.reports.dependency.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>
+    
+    <target name="retrieve" depends="init">
+        <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision](-[classifier]).[ext]" sync="true"/>
+        <ivy:report todir="${build.reports.dependency.dir}"/>
+    </target>
+    
+    <target name="compile" depends="retrieve">
+        <javac srcdir="${src.java.dir}" destdir="${build.classes.dir}" source="1.6" fork="false" failonerror="true" includeantruntime="false">
+            <classpath refid="classpath.compile"/>
+        </javac>
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${src.resources.dir}"/>
+        </copy>
+    </target>
+    
+    <target name="javadoc" depends="retrieve">
+        <javadoc destdir="${build.javadoc.dir}" sourcepath="${src.java.dir}" classpathref="classpath.compile" failonerror="true" windowtitle="${project.javadoc.title}">
+            <doctitle>${project.javadoc.title}</doctitle>
+            <link href="http://download.oracle.com/javase/6/docs/api/"/>
+            <link href="http://www.bouncycastle.org/docs/pgdocs1.6/"/>
+            <link href="http://www.bouncycastle.org/docs/docs1.6/"/>
+            <!-- No Ant Javadoc generated -->
+        </javadoc>
+    </target>
+    
+    <target name="jar" depends="compile">
+        <tstamp>
+            <format property="build-date" pattern="yyyy-MM-dd"/>
+        </tstamp>
+        <jar destfile="${dist.dir}/${project.filename.jar}" basedir="${build.classes.dir}">
+            <manifest>
+                <attribute name="Specification-Title" value="${project.name}" />
+                <attribute name="Specification-Version" value="${project.version}" />
+                <attribute name="Specification-Vendor" value="${project.vendor}" />
+                <attribute name="Implementation-Title" value="${project.name}" />
+                <attribute name="Implementation-Version" value="${project.version}" />
+                <attribute name="Implementation-Vendor" value="${project.vendor}" />
+                <attribute name="Build-Date" value="${build-date}" />
+                <attribute name="Sealed" value="false" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="jar-javadoc" depends="javadoc">
+        <jar destfile="${dist.dir}/${project.filename.javadoc.jar}" basedir="${build.javadoc.dir}"/>
+    </target>
+
+    <target name="jar-sources">
+        <jar destfile="${dist.dir}/${project.filename.sources.jar}" basedir="${src.dir}"/>
+    </target>
+    
+    <target name="make-pom">
+        <ivy:makepom ivyfile="${basedir}/ivy.xml" pomfile="${dist.dir}/${project.filename.pom}" artifactpackaging="jar" templatefile="pom.xml">
+            <mapping conf="default" scope="compile"/>
+            <mapping conf="test" scope="test"/>
+        </ivy:makepom>
+    </target>
+    
+    <target name="archive-bin" depends="jar,jar-javadoc,jar-sources">
+        <fileset id="bin-fileset" dir="${dist.dir}">
+            <include name="${project.filename.jar}"/>
+            <include name="${project.filename.javadoc.jar}"/>
+            <include name="${project.filename.sources.jar}"/>
+        </fileset>
+        <zipfileset id="bin-javadoc-fileset" dir="${build.javadoc.dir}" prefix="apidocs"/>
+        <zip destfile="${dist.dir}/${project.filename.bin.base}.zip">
+            <fileset refid="bin-fileset"/>
+            <zipfileset refid="bin-javadoc-fileset"/>
+        </zip>
+        <tar destfile="${dist.dir}/${project.filename.bin.base}.tar">
+            <fileset refid="bin-fileset"/>
+            <zipfileset refid="bin-javadoc-fileset"/>
+        </tar>
+        <gzip src="${dist.dir}/${project.filename.bin.base}.tar" destfile="${dist.dir}/${project.filename.bin.base}.tar.gz"/>
+        <delete file="${dist.dir}/${project.filename.bin}.tar"/>
+    </target>
+
+    <target name="archive-project" depends="init">
+        <fileset id="project-fileset" dir="." defaultexcludes="true">
+            <exclude name="**/.git/"/>
+            <exclude name="**/.gitignore"/>
+            <exclude name="**/*.project"/>
+            <exclude name="**/*.classpath"/>
+            <exclude name="**/.settings/"/>
+            <exclude name="**/.fbprefs"/>
+            <exclude name="**/lib/"/>
+            <exclude name="**/bin/"/>
+            <exclude name="**/build/"/>
+            <exclude name="**/dist/"/>
+        </fileset>
+        <zip destfile="${dist.dir}/${project.filename.src.base}.zip">
+            <fileset refid="project-fileset"/>
+        </zip>
+        <tar destfile="${dist.dir}/${project.filename.src.base}.tar">
+            <fileset refid="project-fileset"/>
+        </tar>
+        <gzip src="${dist.dir}/${project.filename.src.base}.tar" destfile="${dist.dir}/${project.filename.src.base}.tar.gz"/>
+        <delete file="${dist.dir}/${project.filename.src}.tar"/>
+    </target>
+
+    <target name="build" depends="archive-bin,archive-project,make-pom" description="Runs full build."/>
+</project>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info organisation="com.mattbertolini" module="antpgp" status="integration">
+        <license name="New BSD License" url="http://www.opensource.org/licenses/BSD-3-Clause"/>
+        <ivyauthor name="Matt Bertolini"/>
+	</info>
+	<configurations>
+        <conf name="compile"/>
+        <conf name="default"/>
+	</configurations>
+	<dependencies>
+	   <dependency org="org.apache.ant" name="ant" rev="1.7.0" conf="compile->default"/>
+	   <dependency org="org.bouncycastle" name="bcpg-jdk16" rev="1.46" conf="compile->default"/>
+	   <dependency org="org.bouncycastle" name="bcprov-jdk16" rev="1.46" conf="compile->default"/>
+	</dependencies>
+</ivy-module>
