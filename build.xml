@@ -4,6 +4,7 @@
         
     <path id="classpath.compile">
         <fileset dir="${lib.dir}/compile"/>
+        <fileset dir="${lib.dir}/provided"/>
     </path>
     
     <target name="clean">
@@ -71,8 +72,8 @@
     
     <target name="make-pom">
         <ivy:makepom ivyfile="${basedir}/ivy.xml" pomfile="${dist.dir}/${project.filename.pom}" artifactpackaging="jar" templatefile="pom.xml">
-            <mapping conf="default" scope="compile"/>
-            <mapping conf="test" scope="test"/>
+            <mapping conf="compile" scope="compile"/>
+            <mapping conf="provided" scope="provided"/>
         </ivy:makepom>
     </target>
     

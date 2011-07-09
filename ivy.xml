@@ -6,10 +6,10 @@
 	</info>
 	<configurations>
         <conf name="compile"/>
-        <conf name="default"/>
+        <conf name="provided"/>
 	</configurations>
 	<dependencies>
-	   <dependency org="org.apache.ant" name="ant" rev="1.7.0" conf="compile->default"/>
+	   <dependency org="org.apache.ant" name="ant" rev="1.7.0" conf="provided->default"/>
 	   <dependency org="org.bouncycastle" name="bcpg-jdk16" rev="1.46" conf="compile->default"/>
 	   <dependency org="org.bouncycastle" name="bcprov-jdk16" rev="1.46" conf="compile->default"/>
 	</dependencies>
