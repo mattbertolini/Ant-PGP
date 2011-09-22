@@ -26,16 +26,16 @@
     </target>
     
     <target name="compile" depends="retrieve">
-        <javac srcdir="${src.java.dir}" destdir="${build.classes.dir}" source="1.6" fork="false" failonerror="true" includeantruntime="false">
+        <javac srcdir="${src.main.java.dir}" destdir="${build.classes.dir}" source="1.6" fork="false" failonerror="true" includeantruntime="false">
             <classpath refid="classpath.compile"/>
         </javac>
-        <copy todir="${build.classes.dir}">
-            <fileset dir="${src.resources.dir}"/>
-        </copy>
+        <sync todir="${build.classes.dir}">
+            <fileset dir="${src.main.resources.dir}"/>
+        </sync>
     </target>
     
     <target name="javadoc" depends="retrieve">
-        <javadoc destdir="${build.javadoc.dir}" sourcepath="${src.java.dir}" classpathref="classpath.compile" failonerror="true" windowtitle="${project.javadoc.title}">
+        <javadoc destdir="${build.javadoc.dir}" sourcepath="${src.main.java.dir}" classpathref="classpath.compile" failonerror="true" windowtitle="${project.javadoc.title}">
             <doctitle>${project.javadoc.title}</doctitle>
             <link href="http://download.oracle.com/javase/6/docs/api/"/>
             <link href="http://www.bouncycastle.org/docs/pgdocs1.6/"/>
