@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="testantpgp" basedir="." xmlns:pgp="antlib:com.mattbertolini.antpgp">
     <target name="testsign">
-        <pgp:sign secretkeyring="${gpg.keyring}" keyid="${gpg.keyid}" passphrase="${gpg.passphrase}" outputdir="${outputdir}">
+        <pgp:sign secretkeyring="${gpg.keyring}" keyid="${gpg.keyid}" passphrase="${gpg.passphrase}">
             <fileset dir="${basedir}">
                 <include name="**/*.txt"/>
             </fileset>
