@@ -1,4 +1,4 @@
-package com.mattbertolini.antpgp;
+package com.mattbertolini.antpgp.bouncycastle;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -24,6 +24,9 @@ import org.bouncycastle.openpgp.PGPSecretKeyRingCollection;
 import org.bouncycastle.openpgp.PGPSignature;
 import org.bouncycastle.openpgp.PGPSignatureGenerator;
 import org.bouncycastle.openpgp.PGPUtil;
+
+import com.mattbertolini.antpgp.PgpSignatureGenerator;
+import com.mattbertolini.antpgp.PgpSignatureGeneratorException;
 
 /**
  * 

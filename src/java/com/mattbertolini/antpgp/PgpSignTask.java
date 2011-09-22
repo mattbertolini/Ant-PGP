@@ -12,6 +12,8 @@ import org.apache.tools.ant.types.ResourceCollection;
 import org.apache.tools.ant.types.resources.FileResource;
 import org.apache.tools.ant.types.resources.Union;
 
+import com.mattbertolini.antpgp.bouncycastle.BouncyCastlePgpSignatureGenerator;
+
 /**
  * Ant task for creating signatures using PGP
  * 
