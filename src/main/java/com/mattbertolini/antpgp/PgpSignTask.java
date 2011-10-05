@@ -29,12 +29,14 @@ public class PgpSignTask extends Task {
     private boolean armor;
     private File outputDir;
     private Union files;
+    private boolean verbose;
 
     @Override
     public void init() throws BuildException {
         this.sigGenerator = new BouncyCastlePgpSignatureGenerator();
         this.files = new Union();
         this.armor = true;
+        this.verbose = false;
     }
 
     @Override
@@ -73,13 +75,14 @@ public class PgpSignTask extends Task {
             String outputPath = filePath;
             if(this.outputDir != null) {
                 if(!this.outputDir.isDirectory()) {
-                    throw new BuildException("Output dir is not a directory.");
+                    throw new BuildException(this.outputDir + " is not a directory.");
                 }
                 if(!this.outputDir.exists()) {
                     this.outputDir.mkdir();
                 }
                 outputPath = this.outputDir.getAbsolutePath() + FILE_SEPARATOR + fileToSign.getName();
-                this.log("Saving signed file to " + outputPath, LogLevel.VERBOSE.getLevel());
+                this.log("Saving signed files to " + outputPath, 
+                        this.verbose ? LogLevel.INFO.getLevel() : LogLevel.VERBOSE.getLevel());
             }
             File outputFile = null;
             if(this.armor) {
@@ -87,7 +90,7 @@ public class PgpSignTask extends Task {
             } else {
                 outputFile = new File(outputPath + ".sig");
             }
-            this.log("Signing " + filePath, LogLevel.VERBOSE.getLevel());
+            this.log("Signing " + filePath, this.verbose ? LogLevel.INFO.getLevel() : LogLevel.VERBOSE.getLevel());
             
             try {
                 this.sigGenerator.signFile(fileToSign, outputFile, this.armor);
@@ -146,9 +149,20 @@ public class PgpSignTask extends Task {
      * Defaults to the same directory as the files being signed.
      * 
      * @param outputDir
+     * @since 1.0.0
      */
     public void setOutputDir(File outputDir) {
         this.outputDir = outputDir;
+    }
+    
+    /**
+     * Optional. When set to true, enables verbose logging for the task.
+     * 
+     * @param verbose
+     * @since 1.0.0
+     */
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
     }
 
     public void add(ResourceCollection rc) {
